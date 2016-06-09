@@ -10,7 +10,7 @@ data = {
 }
 
 
-@app.route('/')
+@app.route('/book')
 def book_list():
     content = json.dumps(data)
     response = make_response(
