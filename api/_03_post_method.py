@@ -1,38 +1,47 @@
 import json
-from flask import Flask, Response, request
-from .utils import JSON_MIME_TYPE
+import sqlite3
+from flask import Flask, request, g
+from .utils import json_response, JSON_MIME_TYPE
+
 
 app = Flask(__name__)
 
-LAST_ID = 33
-books = [{
-    'id': 33,
-    'title': 'The Raven',
-    'author_id': 1
-}]
+
+@app.before_request
+def before_request():
+    g.db = sqlite3.connect(app.config['DATABASE_NAME'])
 
 
 @app.route('/book')
 def book_list():
-    response = Response(
-        json.dumps(books), status=200, mimetype=JSON_MIME_TYPE)
-    return response
+    cursor = g.db.execute('SELECT id, author_id, title FROM book;')
+    books = [{
+        'id': row[0],
+        'author_id': row[1],
+        'title': row[2]
+    } for row in cursor.fetchall()]
+
+    return json_response(json.dumps(books))
 
 
 @app.route('/book', methods=['POST'])
 def book_create():
-    global LAST_ID
-    assert request.content_type == JSON_MIME_TYPE
-
-    LAST_ID += 1
+    if request.content_type != JSON_MIME_TYPE:
+        error = json.dumps({'error': 'Invalid Content Type'})
+        return json_response(error, 400)
 
     data = request.json
-    books.append({
-        'id': LAST_ID,
+    if not all([data.get('title'), data.get('author_id')]):
+        error = json.dumps({'error': 'Missing field/s (title, author_id)'})
+        return json_response(error, 400)
+
+    query = ('INSERT INTO book ("author_id", "title") '
+             'VALUES (:author_id, :title);')
+    params = {
         'title': data['title'],
         'author_id': data['author_id']
-    })
+    }
+    g.db.execute(query, params)
+    g.db.commit()
 
-    response = Response(
-        "", status=201, mimetype='application/json')
-    return response
+    return json_response(status=201)

@@ -1,34 +1,26 @@
-import json
-from flask import Flask, Response, request, abort
-from .utils import JSON_MIME_TYPE
+from flask import g, abort
 
-app = Flask(__name__)
-
-LAST_ID = 33
-books = [{
-    'id': 33,
-    'title': 'The Raven',
-    'author_id': 1
-}]
-
-
-@app.route('/book')
-def book_list():
-    response = Response(
-        json.dumps(books), status=200, mimetype=JSON_MIME_TYPE)
-    return response
+from .utils import json_response
+from ._03_post_method import app
 
 
 @app.route('/book/<int:book_id>', methods=['DELETE'])
 def book_delete(book_id):
-    assert request.content_type == JSON_MIME_TYPE
+    params = {'id': book_id}
+    query = 'SELECT count(*) FROM book WHERE book.id = :id'
+    cursor = g.db.execute(query, params)
 
-    for idx, book in enumerate(books):
-        if book['id'] == book_id:
-            del books[idx]
-            return "", 204, {'Content-Type': JSON_MIME_TYPE}
+    # Check if book exists
+    if cursor.fetchone()[0] == 0:
+        # Doesn't exist. Return 404.
+        abort(404)
 
-    abort(404)
+    # Delete it
+    delete_query = 'DELETE FROM book WHERE book.id = :id'
+    g.db.execute(delete_query, {'id': book_id})
+    g.db.commit()
+
+    return json_response(status=204)
 
 
 @app.errorhandler(404)

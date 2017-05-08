@@ -13,6 +13,9 @@ books = [{
 @app.route('/book')
 def book_list():
     content = json.dumps(books)
+
     response = make_response(
         content, 200, {'Content-Type': 'application/json'})
+    # Check utils.json_response ;)
+
     return response
