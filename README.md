@@ -1,5 +1,5 @@
 # Covid Fake News Buster
-This application was written as part of the CodeForCoroana 2020 challenge.
+This application was written as part of the CodeForCorona 2020 challenge.
 
 It consists of a flask backend API as well as a telegram bot front-end.
 
@@ -11,13 +11,13 @@ By crowdsourcing the authenticity of each chain chain text message, we allow the
 ![image](https://user-images.githubusercontent.com/25117015/81491116-c253cc00-92bc-11ea-96a7-f4609a9083dd.jpg)
 
 
-## Technolgoies used 
+## Technologies used 
 - Spacy
 - Flask
 - Telebot
 - Googlesearch
 
-## Running the API servcie
+## Running the API service
 
 ```bash
 $ python3 run_app.py
