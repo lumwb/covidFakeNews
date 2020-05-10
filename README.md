@@ -1,49 +1,29 @@
-# Flask RESTful API example
-_(This repo is part of our [Free Flask Tutorial](https://flask-tutorial.com))_
+# Covid Fake News Buster
+This application was written as part of the CodeForCoroana 2020 challenge.
 
-This repo shows how to create a simple RESTful API using the Flask web framework. Among the included features, you'll see how to:
-* Return custom status codes and headers ⚡️
-* Create resources using POST requests 📬
-* Deleting resources using DELETE requests 📭
-* Test the application using Flask's [test client](http://flask.pocoo.org/docs/latest/testing) 🔮
+It consists of a flask backend API as well as a telegram bot front-end.
 
-**There's a detailed video lesson on how to perform the deploy in our [Free Flask Tutorial](https://flask-tutorial.com).**
+Users can forward suspicious news to our telegram bot @stopfakenewsbot, which will then return a list of aggregated (and reliable) news articles.
+Users can then vote if they think this piece of news is real or fake. 
 
-## Install guide
+By crowdsourcing the authenticity of each chain chain text message, we allow the people to take responsiblity of the media they consume, and act as watchdogs for the rest of the world during these trouble times
 
-##### Clone the repo
+![alt text](https://github.com/lumwb/covidFakeNews/blob/master/image.jpg?raw=true)
+
+## Technolgoies used 
+- Spacy
+- Flask
+- Telebot
+- Googlesearch
+
+## Running the API servcie
 
 ```bash
-$ git clone https://github.com/rmotr/flask-api-example.git
-$ cd flask-api-example
+$ python3 run_app.py
 ```
 
-##### Create the virtualenv
-```bash
-$ mkvirtualenv flask-api-example
-```
-
-##### Install dependencies
-```bash
-$ pip install -r requirements.txt
-```
-
-##### Run the app
-```bash
-$ python run_app.py
-```
-
-## Running the app
+## Running the telegram bot
 
 ```bash
-# Step 3 requires a DB created
-$ sqlite3 library.db < library-schema.sql
-$ python run_app.py
-```
-
-
-## Test
-
-```bash
-$ make test
+$ python3 bot.py
 ```

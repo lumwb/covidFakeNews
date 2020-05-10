@@ -11,6 +11,7 @@ from spacy.lang.en.stop_words import STOP_WORDS
 from collections import OrderedDict
 import numpy as np
 import en_core_web_sm
+import re
 from difflib import SequenceMatcher
 
 app = Flask(__name__)
@@ -195,7 +196,7 @@ class boomerText:
 
     def countPercentageFake(self):
         if self.trueCount + self.falseCount == 0:
-            return -1
+            return 0
 
         return (self.falseCount * 100) / (self.trueCount + self.falseCount)
 
@@ -229,33 +230,41 @@ def checkFakeNews():
 
     # call justin API to get links
     text = plainText.lower()
+    query = "covid 19 "
 
-    tr4w = TextRank4Keyword()
-    tr4w.analyze(text, candidate_pos=[
-                 'NOUN', 'PROPN'], window_size=4, lower=False)
-    tr4w.get_keywords(10)
+    if (len(text) < 75):
+        query = query + text
+    else:
+        tr4w = TextRank4Keyword()
+        tr4w.analyze(text, candidate_pos=[
+            'NOUN', 'PROPN'], window_size=4, lower=False)
+        tr4w.get_keywords(10)
+
+        if len(tr4w.top_words) >= 7:
+            for i in range(7):
+                query += tr4w.top_words[i] + " "
+        else:
+            for keyword in tr4w.top_words:
+                query += keyword + " "
+        temp = re.findall(r'\d+', text)
+        for i in temp:
+            query += i + " "
 
     filter_sites = ["myactivesg.com", "healthhub.sg", "gov.sg",
                     "channelnewsasia.com", "straitstimes.com", "todayonline.com",
                     "www.who.int", "reuters.com"]
 
-    query = "covid 19 "
-    for i in range(7):
-        query += tr4w.top_words[i] + " "
-
     verified_sources = []
     verified_counter = 0
 
-    searchResult = search(query,        # The query you want to run
-                          tld='com',  # The top level domain
-                          lang='en',  # The language
-                          num=10,     # Number of results per page
-                          start=0,    # First result to retrieve
-                          stop=30,  # Last result to retrieve
-                          pause=2.0,  # Lapse between HTTP requests
-                          )
-
-    for i in searchResult:
+    for i in search(query,        # The query you want to run
+                    tld='com',  # The top level domain
+                    lang='en',  # The language
+                    num=10,     # Number of results per page
+                    start=0,    # First result to retrieve
+                    stop=30,  # Last result to retrieve
+                    pause=2.0,  # Lapse between HTTP requests
+                    ):
         for j in range(len(filter_sites)):
             if filter_sites[j] in i:
                 verified_sources.append(i)
@@ -299,6 +308,15 @@ def updateVote():
     }
 
     return jsonify(responseData), 200
+
+
+@app.route('/getBoomerData', methods=['GET'])
+def getBoomerData():
+    global boomerTextList
+    textList = []
+    for boomerText in boomerTextList:
+        textList.append(boomerText.plaintext)
+    return jsonify(textList), 200
 
 
 @app.route('/saveBoomerData', methods=['POST'])
