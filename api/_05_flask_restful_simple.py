@@ -270,7 +270,7 @@ def checkFakeNews():
         "trueCount": currentBoomerText.trueCount,
         "falseCount": currentBoomerText.falseCount,
         "totalSearchCount": currentBoomerText.totalSearchCount,
-        "googleLinks": verified_counter
+        "googleLinks": verified_sources
     }
     return jsonify(responseData), 200
 
