@@ -8,7 +8,8 @@ Users can then vote if they think this piece of news is real or fake.
 
 By crowdsourcing the authenticity of each chain chain text message, we allow the people to take responsiblity of the media they consume, and act as watchdogs for the rest of the world during these trouble times
 
-![alt text](https://github.com/lumwb/covidFakeNews/blob/master/image.jpg?raw=true)
+![image](https://user-images.githubusercontent.com/25117015/81491116-c253cc00-92bc-11ea-96a7-f4609a9083dd.jpg)
+
 
 ## Technolgoies used 
 - Spacy
