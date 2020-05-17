@@ -139,10 +139,31 @@ class TextRank4Keyword():
         self.node_weight = node_weight
 
 
-text = "Pepper - Antidote For Wuhan Virus By Manidar Nadeson, holistic healer Many years ago when Malaysia was hit by the Nipah virus, malaysians indians was not affected.the reason most of them consumed CURRY a tamilan soup that is made from mixed herbs If rasam is with a mild temerature the body will react to heal any kind of viruses. It is encourage to drink with some hot rice for better effects. It was put to trial during the SARS pendemic and the results are amaxing! Preventive is better than cure start today for tomorrow, the Rasam. Avoid consuming meat that is not properly cooked. Rasam the best way forward to cure Wuhan viruses. Forward to your friends and family you care about, and build up our immune system with RASAM!"
+#text = "Pepper - Antidote For Wuhan Virus By Manidar Nadeson, holistic healer Many years ago when Malaysia was hit by the Nipah virus, malaysians indians was not affected.the reason most of them consumed CURRY a tamilan soup that is made from mixed herbs If rasam is with a mild temerature the body will react to heal any kind of viruses. It is encourage to drink with some hot rice for better effects. It was put to trial during the SARS pendemic and the results are amaxing! Preventive is better than cure start today for tomorrow, the Rasam. Avoid consuming meat that is not properly cooked. Rasam the best way forward to cure Wuhan viruses. Forward to your friends and family you care about, and build up our immune system with RASAM!"
 #text = "Interesting advice x From member of the Stanford hospital board. This is their feedback for now on Corona virus: The new Coronavirus may not show sign of infection for many days. How can one know if he/she is infected? By the time they have fever and/or cough and go to the hospital, the lung is usually 50% Fibrosis and it’s too late. Taiwan experts provide a simple self-check that we can do every morning. Take a deep breath and hold your breath for more than 10 seconds. If you complete it successfully without coughing, without discomfort, stiffness or tightness, etc., it proves there is no Fibrosis in the lungs, basically indicates no infection. In critical time, please self-check every morning in an environment with clean air. Serious excellent advice by Japanese doctor treating COVID-19 cases: Everyone should ensure your mouth & throat are moist, never dry. Take a few sips of water every 15 seconds."
-# text = "From another doctor fm a friend :  Just finished attending a web seminar on Covid19 for 800 Spore doctors. Very depressing. 55% to 70% of Covid19 infected are asymtomatic or have minimal symptoms, but can shed the virus for up to 4 weeks. So it means the 'circuit breaker' or even more drastic measures will extend to 6 weeks or even 8 weeks. Latest large scale study, just released 15min ago, shows that hydroxychloroquine has no positive effect in treatment So mask up everybody everywhere you go and stay at home."
-# text = "Garlic water can cure covid virus"
+#text = "From another doctor fm a friend :  Just finished attending a web seminar on Covid19 for 800 Spore doctors. Very depressing. 55% to 70% of Covid19 infected are asymtomatic or have minimal symptoms, but can shed the virus for up to 4 weeks. So it means the 'circuit breaker' or even more drastic measures will extend to 6 weeks or even 8 weeks. Latest large scale study, just released 15min ago, shows that hydroxychloroquine has no positive effect in treatment So mask up everybody everywhere you go and stay at home."
+#text = "Garlic water can cure covid virus"
+##text = """The Ministry of Health (MOH) on Sunday (May 3) announced 657 new cases of
+##Covid-19 infection in the country. This brings the total number of infections in the
+##country to 18,205. In its statement, MOH said that the vast majority of the new cases
+##are work permit holders who are residing in dormitories. “Ten of the infections are
+##Singaporeans or permanent residents, many of whom are linked cases,” MOH said.
+##The health ministry added that the number of cases amongst migrant workers has
+##been fluctuating in recent days due to “clearance of backlogged cases by one laboratory”.
+##“MOH is working with the laboratory to stabilise its operations,” the health ministry said."""
+#text = "Singapore partial lockdown"
+
+text = """
+Singapore reported 465 new COVID-19 cases as of noon on Saturday (May 16), taking the country's total to 27,356.   
+
+The Ministry of Health (MOH) also announced one more death - a 67-year-old Singaporean man known as case 1516. This brings the total number of fatalities from the disease to 22. 
+
+The man, who had a history of ischaemic heart disease, hypertension and hyperlipidaemia, was confirmed to have COVID-19 on Apr 7. He died on May 15 at Sengkang General Hospital. 
+"""
+
+
+        
+
 text = text.lower()
 query = "covid 19 "
 
@@ -161,33 +182,39 @@ else:
         for keyword in tr4w.top_words:
             query += keyword + " "
 
+text = str.split(text)
+for i in text:
+    i = i.replace(".","")
+    i = i.replace(",","")
+    if i.isdigit():
+        query += i + " " 
+
+
+
+
 filter_sites = ["myactivesg.com", "healthhub.sg", "gov.sg",
                 "channelnewsasia.com", "straitstimes.com", "todayonline.com",
                 "www.who.int", "reuter.com", "businessinsider.sg"]
 
 verified_sources = []
-totalAttempted = 0
-print("query is " + query)
+verified_counter = 0
 
-for i in search(query,        # The query you want to run
-                tld='com',  # The top level domain
-                lang='en',  # The language
-                num=10,     # Number of results per page
-                start=0,    # First result to retrieve
-                stop=None,  # Last result to retrieve
-                pause=2.0
-                #   tpe='nws'  # Lapse between HTTP requests
-                ):
+searchResult = search(query,        # The query you want to run
+                      tld='com',  # The top level domain
+                      lang='en',  # The language
+                      num=10,     # Number of results per page
+                      start=0,    # First result to retrieve
+                      stop=30,  # Last result to retrieve
+                      pause=2.0
+                      #   tpe='nws'  # Lapse between HTTP requests
+                      )
+for i in searchResult:
     for j in range(len(filter_sites)):
         if filter_sites[j] in i:
             verified_sources.append(i)
-    if len(verified_sources) >= 5:
-        print("enough sources")
-        break
-    totalAttempted += 1
-    if totalAttempted >= 30:
-        print("tried more than 30 results")
+            verified_counter += 1
+    if verified_counter >= 5:
         break
 
-print(totalAttempted)
+print(query)
 print(verified_sources)

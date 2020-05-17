@@ -3,11 +3,13 @@ import string
 import os
 import requests
 import json
+import config
 from telegram.ext import *
 from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
 
 
 #PORT = int(os.environ.get('PORT', '8443'))
+TOKEN = config.TOKEN
 bot = Bot(token=TOKEN)
 loaded_json = {}
 VERIFY = range(1)
@@ -32,7 +34,7 @@ def pic(update, context):
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id,
                              text="Send me a message using /check, we'll see if its real or not!")
-    r = requests.get('http://0.0.0.0:8010/loadBoomerData')
+    r = requests.get('http://0.0.0.0:8080/loadBoomerData')
     print("load status" + str(r.status_code))
     r.raise_for_status
 
@@ -52,7 +54,7 @@ def verify(update, context):
     global loaded_json
     #loaded_json = {"googleLinks":["www.google.com.sg","www.yahoo.com.sg"],"percentageFakeNews":50.0,"trueCount":1,"falseCount":1}
     headers = {'Content-type': 'application/json', 'Accept': '*/*'}
-    r = requests.post('http://0.0.0.0:8010/checkFakeNews',
+    r = requests.post('http://0.0.0.0:8080/checkFakeNews',
                       json={"boomerText": update.message.text}, headers=headers)
     context.bot.send_message(
         chat_id=update.effective_chat.id, text="Loading links...")
@@ -110,11 +112,11 @@ def button(update, context):
     query.edit_message_text(text="Poll results: Real {:.1f}% | Fake {:.1f}%".format(
         getPercentage(trueCount, total), getPercentage(falseCount, total)))
     headers = {'Content-type': 'application/json', 'Accept': '*/*'}
-    r = requests.post('http://0.0.0.0:8010/updateVote', json={
+    r = requests.post('http://0.0.0.0:8080/updateVote', json={
                       "boomerIndex": loaded_json["boomerIndex"], "voteValue": isTrueVote}, headers=headers)
     print("update status" + str(r.status_code))
     r.raise_for_status
-    requests.post('http://0.0.0.0:8010/saveBoomerData', headers=headers)
+    requests.post('http://0.0.0.0:8080/saveBoomerData', headers=headers)
     print("load status" + str(r.status_code))
     r.raise_for_status
 
