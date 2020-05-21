@@ -1,4 +1,5 @@
 import re
+import config
 import logging
 import string
 import os
@@ -7,7 +8,6 @@ import json
 from telegram.ext import *
 from telegram import Bot,InlineKeyboardButton,InlineKeyboardMarkup,ReplyKeyboardRemove
 
-TOKEN="1239297361:AAHCoR_LZycidG4mxbjfS6kEs7P0KZUUcQo"
 HOST="0.0.0.0:8010"
 #PORT = int(os.environ.get('PORT', '8443'))
 bot = Bot(token = TOKEN)
