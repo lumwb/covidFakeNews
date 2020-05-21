@@ -9,6 +9,7 @@ from telegram.ext import *
 from telegram import Bot,InlineKeyboardButton,InlineKeyboardMarkup,ReplyKeyboardRemove
 
 HOST="0.0.0.0:8010"
+TOKEN = config.TOKEN
 #PORT = int(os.environ.get('PORT', '8443'))
 bot = Bot(token = TOKEN)
 loaded_json = {}
