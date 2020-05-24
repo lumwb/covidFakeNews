@@ -1,1 +1,1 @@
-web: python3 start_backed.py
+web: python3 start_backend.py
