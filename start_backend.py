@@ -312,6 +312,12 @@ def getBoomerData():
     return boomerTextSchema.dumps(allBoomerTexts)
 
 
+@app.route('/')
+def index():
+    # Heroku test deployment
+    return "<h1>Welcome to covid fake news backend server !!</h1>"
+
+
 @app.errorhandler(404)
 def not_found(e):
     return '', 404
