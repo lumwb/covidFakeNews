@@ -28,7 +28,7 @@ https://youtu.be/vylxfnWft94
 ## Running the API service
 
 ```bash
-$ python3 run_app.py
+$ python3 start_backend.py
 ```
 
 ## Running the telegram bot
