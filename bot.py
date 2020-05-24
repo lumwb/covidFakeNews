@@ -6,65 +6,67 @@ import os
 import requests
 import json
 from telegram.ext import *
-from telegram import Bot,InlineKeyboardButton,InlineKeyboardMarkup,ReplyKeyboardRemove
+from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
 
-HOST="0.0.0.0:8010"
+HOST = "0.0.0.0:8090"
 TOKEN = config.TOKEN
 #PORT = int(os.environ.get('PORT', '8443'))
-bot = Bot(token = TOKEN)
+bot = Bot(token=TOKEN)
 loaded_json = {}
 
-#Set up basic logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',level=logging.INFO)
+# Set up basic logging
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
-#HELPER FUNCTIONS
+# HELPER FUNCTIONS
+
 
 def getPercentage(number, total):
     return number/total * 100.0
 
-#API FUNCTIONS
+# API FUNCTIONS
 
-def loadBoomerData(host):
-    response = requests.get('http://' + host + '/loadBoomerData')
-    print("load status" + str(r.status_code))
-    response.raise_for_status 
 
-def saveBoomerData(host):
-    response = requests.post('http://' + host + '/saveBoomerData',headers=headers)
-    print("load status" + str(r.status_code))
-    response.raise_for_status
-
-def getCheckFakeNewsResults(host):
+def getCheckFakeNewsResults(host, update):
+    print(update)
+    print(type(update))
     headers = {'Content-type': 'application/json', 'Accept': '*/*'}
-    response = requests.post('http://' + host + '/checkFakeNews', json={"boomerText": update.message.text},headers=headers)
-    return response.json() 
+    response = requests.post('http://' + host + '/checkFakeNews',
+                             json={"boomerText": update.message.text}, headers=headers)
+    print()
+    return response.json()
 
-def updateVote(host):
+
+def updateVote(host, isTrueVote):
     headers = {'Content-type': 'application/json', 'Accept': '*/*'}
-    response = requests.post('http://' + host + '/updateVote', json={"boomerIndex":loaded_json["boomerIndex"],"voteValue":isTrueVote},headers=headers)
+    response = requests.post('http://' + host + '/updateVote', json={
+                             "boomerIndex": loaded_json["boomerIndex"], "voteValue": isTrueVote}, headers=headers)
     print("update status" + str(response.status_code))
     response.raise_for_status
 
-#HANDLER FUNCTIONS
+# HANDLER FUNCTIONS
+
 
 def start(update, context):
-    context.bot.send_message(chat_id=update.effective_chat.id, text="Send me a message using /check, we'll see if its real or not!")
-    loadBoomerData(HOST) 
+    context.bot.send_message(chat_id=update.effective_chat.id,
+                             text="Send me a message using /check, we'll see if its real or not!")
 
-def verify(update,context):
-    
-    context.bot.send_message(chat_id=update.effective_chat.id, text="Loading links...")
-    
+
+def verify(update, context):
+
+    context.bot.send_message(
+        chat_id=update.effective_chat.id, text="Loading links...")
+
     global loaded_json
-    
-    #Dummy dataset from API Call
+
+    # Dummy dataset from API Call
     #loaded_json = {"googleLinks":["www.google.com.sg","www.yahoo.com.sg"],"percentageFakeNews":50.0,"trueCount":1,"falseCount":1,"totalSearchCount":2}
-    
-    #Configure and call API for reputable links given message
-    loaded_json = getCheckFakeNewsResults(HOST) 
+
+    # Configure and call API for reputable links given message
+    loaded_json = getCheckFakeNewsResults(HOST, update)
     print(loaded_json)
 
-    #Formatting and displaying links to user
+    # Formatting and displaying links to user
     link_text = "Here are the reputable articles we have found:"
     links = loaded_json["googleLinks"]
     for i in range(len(links)):
@@ -72,7 +74,7 @@ def verify(update,context):
         link_text += entry
     context.bot.send_message(chat_id=update.effective_chat.id, text=link_text)
 
-    #Prompting for user vote
+    # Prompting for user vote
     '''
     totalSearchCount = loaded_json["totalSearchCount"]
     print(totalSearchCount)
@@ -83,15 +85,20 @@ def verify(update,context):
         user_word = "users"
     print(user_word)
     '''
-    question = "{} users have checked for a similar message.".format(loaded_json["totalSearchCount"])
-    question += "\nCurrent poll flags this message as {:.1f}% fake.".format(loaded_json["percentageFakeNews"])
+    question = "{} users have checked for a similar message.".format(
+        loaded_json["totalSearchCount"])
+    question += "\nCurrent poll flags this message as {:.1f}% fake.".format(
+        loaded_json["percentageFakeNews"])
     question += "\nFrom the given sources above, how likely is this message fake news?"
 
-    #Configure keyboard for voting
-    keyboard = [[InlineKeyboardButton("Real",callback_data="1"),InlineKeyboardButton("Fake",callback_data="0")]]
+    # Configure keyboard for voting
+    keyboard = [[InlineKeyboardButton(
+        "Real", callback_data="1"), InlineKeyboardButton("Fake", callback_data="0")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    context.bot.send_message(chat_id=update.effective_chat.id, text=question,reply_markup=reply_markup) 
+    context.bot.send_message(
+        chat_id=update.effective_chat.id, text=question, reply_markup=reply_markup)
+
 
 def button(update, context):
     query = update.callback_query
@@ -108,25 +115,27 @@ def button(update, context):
         falseCount += 1
     total = trueCount + falseCount
 
-    query.edit_message_text(text="Poll results: Real {:.1f}% | Fake {:.1f}%".format(getPercentage(trueCount,total),getPercentage(falseCount,total)))
-    
-    #Call API to update database with new user vote
-    updateVote(HOST)
-    saveBoomerData(HOST)
-    
-#MAIN FUNCTION
+    query.edit_message_text(text="Poll results: Real {:.1f}% | Fake {:.1f}%".format(
+        getPercentage(trueCount, total), getPercentage(falseCount, total)))
+
+    # Call API to update database with new user vote
+    updateVote(HOST, isTrueVote)
+
+# MAIN FUNCTION
+
 
 def main():
     updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
-   
-    dp.add_handler(MessageHandler(Filters.text,verify))
+
+    dp.add_handler(MessageHandler(Filters.text, verify))
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(CommandHandler('start', start))
     updater.start_polling()
-    #updater.start_webhook(listen="0.0.0.0",port=PORT,url_path=TOKEN)
+    # updater.start_webhook(listen="0.0.0.0",port=PORT,url_path=TOKEN)
     #updater.bot.set_webhook("https://hidden-reef-68700.herokuapp.com/" + TOKEN)
     updater.idle()
-    
+
+
 if __name__ == '__main__':
     main()

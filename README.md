@@ -14,9 +14,9 @@ https://devpost.com/software/fakenewsbuster
 Our video demonstration:
 https://youtu.be/vylxfnWft94
 
-![image](./fakeNewsBuster.gif)
+![image](./assets/fakeNewsBusterDemo.gif)
 
-![image](https://user-images.githubusercontent.com/25117015/81491116-c253cc00-92bc-11ea-96a7-f4609a9083dd.jpg)
+![image](./assets/logo.jpg)
 
 
 ## Technologies used 
