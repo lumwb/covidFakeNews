@@ -4,7 +4,7 @@ import spacy
 import json
 import pickle
 import os
-import config
+# import config
 from collections import Counter
 from string import punctuation
 from googlesearch import search
