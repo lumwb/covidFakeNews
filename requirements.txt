@@ -14,14 +14,13 @@ click==7.1.2
 cryptography==2.9.2
 cymem==2.0.3
 decorator==4.4.2
+en-core-web-sm==2.2.5
 Flask==1.1.2
 flask-marshmallow==0.12.0
 Flask-RESTful==0.3.5
 Flask-SQLAlchemy==2.4.1
 future==0.18.2
 gast==0.2.2
-numpy==1.18.4
-GDAL==2.4.2
 google==2.0.3
 google-auth==1.10.0
 google-auth-oauthlib==0.4.1
@@ -46,6 +45,7 @@ mccabe==0.6.1
 moviepy==0.2.3.5
 murmurhash==1.0.2
 nose==1.3.7
+numpy==1.18.4
 oauthlib==3.1.0
 opencv-python==4.1.2.30
 opt-einsum==3.1.0
