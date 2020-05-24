@@ -12,7 +12,6 @@ from spacy.lang.en.stop_words import STOP_WORDS
 from collections import OrderedDict
 from flask_sqlalchemy import SQLAlchemy
 import numpy as np
-import en_core_web_sm
 import re
 from difflib import SequenceMatcher
 from flask_marshmallow import Marshmallow
@@ -30,7 +29,7 @@ api = Api(app)
 ma = Marshmallow(app)
 
 # load spacy english library
-nlp = en_core_web_sm.load()
+nlp = spacy.load("en_core_web_sm")
 
 
 class boomerText(db.Model):
