@@ -20,7 +20,7 @@ from flask_marshmallow import Marshmallow
 app = Flask(__name__)
 
 # load database url before calling SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = config.MYSQL_URL
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
 # load flask api config
