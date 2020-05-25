@@ -5,13 +5,14 @@ import string
 import os
 import requests
 import json
-from telegram.ext import *
+from telegram.ext import Updater, Dispatcher, Filters, CallbackQueryHandler, CommandHandler, MessageHandler 
 from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
 
 HOST = "covid-fake-news-backend.herokuapp.com"
 # HOST = "0.0.0.0:8080"
+# TOKEN = os.getenv('TOKEN')
 TOKEN = config.TOKEN
-#PORT = int(os.environ.get('PORT', '8443'))
+PORT = int(os.environ.get('PORT', '8443'))
 bot = Bot(token=TOKEN)
 loaded_json = {}
 
@@ -50,7 +51,7 @@ def updateVote(host, isTrueVote):
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id,
-                             text="Send me a message using /check, we'll see if its real or not!")
+                             text="Send me a message, we'll see if its real or not!")
 
 
 def verify(update, context):
@@ -124,17 +125,18 @@ def button(update, context):
 
 # MAIN FUNCTION
 
-
 def main():
     updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
-
+    
+    dp.add_handler(CommandHandler('start', start))
     dp.add_handler(MessageHandler(Filters.text, verify))
     dp.add_handler(CallbackQueryHandler(button))
-    dp.add_handler(CommandHandler('start', start))
+
     updater.start_polling()
-    # updater.start_webhook(listen="0.0.0.0",port=PORT,url_path=TOKEN)
-    #updater.bot.set_webhook("https://hidden-reef-68700.herokuapp.com/" + TOKEN)
+    #updater.start_webhook(listen="0.0.0.0",port=PORT,url_path=TOKEN)
+    #updater.bot.set_webhook("https://fakenewsbusterbot.herokuapp.com/" + TOKEN)
+    
     updater.idle()
 
 
