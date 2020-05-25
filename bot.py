@@ -124,16 +124,15 @@ def button(update, context):
 
 # MAIN FUNCTION
 
-
 def main():
     updater = Updater(TOKEN, use_context=True)
     dp = updater.dispatcher
-
+    
+    dp.add_handler(CommandHandler('start', start))
     dp.add_handler(MessageHandler(Filters.text, verify))
     dp.add_handler(CallbackQueryHandler(button))
-    dp.add_handler(CommandHandler('start', start))
     updater.start_polling()
-    # updater.start_webhook(listen="0.0.0.0",port=PORT,url_path=TOKEN)
+    #updater.start_webhook(listen="0.0.0.0",port=PORT,url_path=TOKEN)
     #updater.bot.set_webhook("https://hidden-reef-68700.herokuapp.com/" + TOKEN)
     updater.idle()
 
