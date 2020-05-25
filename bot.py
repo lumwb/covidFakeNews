@@ -5,11 +5,12 @@ import string
 import os
 import requests
 import json
-from telegram.ext import *
+from telegram.ext import Updater, Dispatcher, Filters, CallbackQueryHandler, CommandHandler, MessageHandler 
 from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
 
 HOST = "covid-fake-news-backend.herokuapp.com"
 # HOST = "0.0.0.0:8080"
+# TOKEN = os.getenv('TOKEN')
 TOKEN = config.TOKEN
 PORT = int(os.environ.get('PORT', '8443'))
 bot = Bot(token=TOKEN)
@@ -131,9 +132,11 @@ def main():
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(MessageHandler(Filters.text, verify))
     dp.add_handler(CallbackQueryHandler(button))
-    #updater.start_polling()
-    updater.start_webhook(listen="0.0.0.0",port=PORT,url_path=TOKEN)
-    updater.bot.set_webhook("https://hidden-reef-68700.herokuapp.com/" + TOKEN)
+
+    updater.start_polling()
+    #updater.start_webhook(listen="0.0.0.0",port=PORT,url_path=TOKEN)
+    #updater.bot.set_webhook("https://fakenewsbusterbot.herokuapp.com/" + TOKEN)
+    
     updater.idle()
 
 
