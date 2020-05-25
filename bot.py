@@ -11,7 +11,7 @@ from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeybo
 HOST = "covid-fake-news-backend.herokuapp.com"
 # HOST = "0.0.0.0:8080"
 TOKEN = config.TOKEN
-#PORT = int(os.environ.get('PORT', '8443'))
+PORT = int(os.environ.get('PORT', '8443'))
 bot = Bot(token=TOKEN)
 loaded_json = {}
 
@@ -131,9 +131,9 @@ def main():
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(MessageHandler(Filters.text, verify))
     dp.add_handler(CallbackQueryHandler(button))
-    updater.start_polling()
-    #updater.start_webhook(listen="0.0.0.0",port=PORT,url_path=TOKEN)
-    #updater.bot.set_webhook("https://hidden-reef-68700.herokuapp.com/" + TOKEN)
+    #updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0",port=PORT,url_path=TOKEN)
+    updater.bot.set_webhook("https://hidden-reef-68700.herokuapp.com/" + TOKEN)
     updater.idle()
 
 
