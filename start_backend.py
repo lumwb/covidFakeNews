@@ -313,8 +313,12 @@ def getBoomerData():
 
 @app.route('/')
 def index():
-    # Heroku test deployment
-    return "<h1>Welcome to covid fake news backend server !!</h1>"
+    # Backend server landing page
+    basicHtmlPage = """
+        <h1>Welcome to covid fake news backend server.</h1>
+        <a href="https://github.com/lumwb/covidFakeNews">Click here to visit our Github page</a>
+    """
+    return basicHtmlPage
 
 
 @app.errorhandler(404)
