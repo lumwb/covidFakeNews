@@ -51,7 +51,7 @@ def updateVote(host, isTrueVote):
 
 def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id,
-                             text="Send me a message using /check, we'll see if its real or not!")
+                             text="Send me a message, we'll see if its real or not!")
 
 
 def verify(update, context):
