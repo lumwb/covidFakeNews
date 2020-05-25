@@ -8,7 +8,8 @@ import json
 from telegram.ext import *
 from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardRemove
 
-HOST = "0.0.0.0:8090"
+HOST = "covid-fake-news-backend.herokuapp.com"
+# HOST = "0.0.0.0:8080"
 TOKEN = config.TOKEN
 #PORT = int(os.environ.get('PORT', '8443'))
 bot = Bot(token=TOKEN)
