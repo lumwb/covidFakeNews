@@ -7,7 +7,7 @@ import spacy
 import json
 import pickle
 import os
-import config
+# import config
 from collections import Counter
 from string import punctuation
 # from googlesearch import search
@@ -22,8 +22,8 @@ from flask_marshmallow import Marshmallow
 app = Flask(__name__)
 
 # load database url before calling SQLAlchemy
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-app.config['SQLALCHEMY_DATABASE_URI'] = config.PSQL_URL
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = config.PSQL_URL
 db = SQLAlchemy(app)
 
 # load flask api config
