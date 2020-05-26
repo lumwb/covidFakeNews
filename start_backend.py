@@ -221,17 +221,20 @@ def getVerifiedLinks(plainText):
     verified_sources = []
     verified_counter = 0
 
-    for i in search(query,        # The query you want to run
-                    tld='com',  # The top level domain
-                    lang='en',  # The language
-                    num=10,     # Number of results per page
-                    start=0,    # First result to retrieve
-                    stop=30,  # Last result to retrieve
-                    pause=2.0,  # Lapse between HTTP requests
-                    country='SG'
-                    ):
+    searchResult = search(query,        # The query you want to run
+                          tld='com',  # The top level domain
+                          lang='en',  # The language
+                          num=10,     # Number of results per page
+                          start=0,    # First result to retrieve
+                          stop=30,  # Last result to retrieve
+                          pause=2.0,  # Lapse between HTTP requests
+                          country='SG'
+                          #   tpe='nws'
+                          )
+
+    for i in searchResult:
         for j in range(len(filter_sites)):
-            if filter_sites[j] in i:
+            if (filter_sites[j] in i) and (i not in verified_sources):
                 verified_sources.append(i)
                 verified_counter += 1
         if verified_counter >= 5:
