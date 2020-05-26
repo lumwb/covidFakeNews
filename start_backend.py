@@ -7,7 +7,7 @@ import spacy
 import json
 import pickle
 import os
-# import config
+import config
 from collections import Counter
 from string import punctuation
 # from googlesearch import search
@@ -22,8 +22,8 @@ from flask_marshmallow import Marshmallow
 app = Flask(__name__)
 
 # load database url before calling SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-# app.config['SQLALCHEMY_DATABASE_URI'] = config.PSQL_URL
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = config.PSQL_URL
 db = SQLAlchemy(app)
 
 # load flask api config
@@ -36,8 +36,9 @@ ma = Marshmallow(app)
 nlp = spacy.load("en_core_web_sm")
 
 URL_GENERATED = ""
-
+SYS_VERSION = ""
 if sys.version_info[0] > 2:
+    SYS_VERSION = "SYS VERSION GREATER THAN 2"
     from http.cookiejar import LWPCookieJar
     from urllib.request import Request, urlopen
     from urllib.parse import quote_plus, urlparse, parse_qs
@@ -46,6 +47,7 @@ else:
     from urllib import quote_plus
     from urllib2 import Request, urlopen
     from urlparse import urlparse, parse_qs
+    SYS_VERSION = "SYS VERSION LESS THAN 2"
 
 try:
     from bs4 import BeautifulSoup
@@ -290,8 +292,10 @@ def search(query, tld='com', lang='en', tbs='0', safe='off', num=10, start=0,
             url = url_next_page_num % vars()
     else:
         if num == 10:
+            print("end and url search")
             url = url_search % vars()
         else:
+            print("end and url search num")
             url = url_search_num % vars()
 
     # Loop until we reach the maximum result, if any (otherwise, loop forever).
@@ -680,6 +684,7 @@ def countPercentageFake(boomerTextModel):
 @app.route('/checkFakeNews', methods=['POST'])
 def checkFakeNews():
     global URL_GENERATED
+    global SYS_VERSION
     data = request.json
     plainText = data['boomerText']
 
@@ -708,7 +713,8 @@ def checkFakeNews():
         "falseCount": boomerTextResult.falseCount,
         "totalSearchCount": boomerTextResult.totalSearchCount,
         "googleLinks": verifiedSources,
-        "urlGenerated": URL_GENERATED
+        "urlGenerated": URL_GENERATED,
+        "systemVeresion": SYS_VERSION
     }
     return jsonify(responseData), 200
 
