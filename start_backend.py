@@ -20,6 +20,7 @@ app = Flask(__name__)
 
 # load database url before calling SQLAlchemy
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = config.PSQL_URL
 db = SQLAlchemy(app)
 
 # load flask api config
@@ -205,13 +206,17 @@ def getVerifiedLinks(plainText):
         else:
             for keyword in tr4w.top_words:
                 query += keyword + " "
-        temp = re.findall(r'\d+', text)
-        for i in temp:
+
+    text = str.split(text)
+    for i in text:
+        i = i.replace(".", "")
+        i = i.replace(",", "")
+        if i.isdigit():
             query += i + " "
 
     filter_sites = ["myactivesg.com", "healthhub.sg", "gov.sg",
                     "channelnewsasia.com", "straitstimes.com", "todayonline.com",
-                    "www.who.int", "reuters.com"]
+                    "www.who.int", "reuter.com", "businessinsider.sg"]
 
     verified_sources = []
     verified_counter = 0
@@ -223,6 +228,8 @@ def getVerifiedLinks(plainText):
                     start=0,    # First result to retrieve
                     stop=30,  # Last result to retrieve
                     pause=2.0,  # Lapse between HTTP requests
+                    country='SG',
+                    tpe='nws'
                     ):
         for j in range(len(filter_sites)):
             if filter_sites[j] in i:

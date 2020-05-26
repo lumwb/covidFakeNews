@@ -34,6 +34,7 @@ https://youtu.be/vylxfnWft94
 - Googlesearch
 - PSQL
 - Heroku
+- Postman
 
 ## Running the API service
 
