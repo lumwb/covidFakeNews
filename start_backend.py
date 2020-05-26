@@ -232,9 +232,9 @@ def getVerifiedLinks(plainText):
                     tpe='nws'
                     ):
         for j in range(len(filter_sites)):
-            if filter_sites[j] in i:
-                verified_sources.append(i)
-                verified_counter += 1
+            # if filter_sites[j] in i:
+            verified_sources.append(i)
+            verified_counter += 1
         if verified_counter >= 5:
             break
 
